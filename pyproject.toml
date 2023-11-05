@@ -4,14 +4,16 @@ version = "0.1.0"
 description = ""
 authors = ["mariannabaldez <mariannabaldez@gmail.com>"]
 readme = "README.md"
-packages = [{include = "nutritional_value_recipes"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-sqlalchemy = "^2.0.22"
 postgres = "^4.0"
 fastapi = "^0.104.1"
 unidecode = "^1.3.7"
+uvicorn = "^0.23.2"
+asyncpg = "^0.28.0"
+psycopg2-binary = "^2.9.9"
+databases = "^0.8.0"
 
 
 [build-system]

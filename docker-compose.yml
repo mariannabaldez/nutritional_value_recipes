@@ -1,0 +1,17 @@
+﻿version: "3.8"
+services:
+  postgresql:
+    image: postgres:alpine
+    container_name: recipes-postgres
+    environment:
+      - POSTGRES_DB=nutritional_value_recipes_dev
+      - POSTGRES_USER=usuario
+      - POSTGRES_PASSWORD=senha
+    ports:
+      - 5432:5432
+    volumes:
+      - nutritional_value_recipes_psql:/var/lib/postgresql/data
+
+volumes:
+  nutritional_value_recipes_psql:
+

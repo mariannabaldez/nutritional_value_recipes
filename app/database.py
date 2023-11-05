@@ -1,8 +1,7 @@
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import JSON
 import databases
 
-DATABASE_URL = None
+DATABASE_URL = "postgresql://usuario:senha@localhost:5432/nutritional_value_recipes_dev"
 
 database = databases.Database(DATABASE_URL)
 
@@ -25,91 +24,12 @@ recipes = sa.Table(
     sa.Column(
         "descript",
         sa.String(4000)
-    )
-)
-
-# Define tabela que conterá os ingredientes usados nas receitas
-ingredients = sa.Table(
-    "ingredients",
-    metadata,
-    sa.Column(
-        "id",
-        sa.Integer,
-        primary_key=True
     ),
     sa.Column(
-        "id_recipe",
-        sa.Integer,
-        sa.ForeignKey("recipes.id")
-    ),
-    sa.Column(
-        "name",
-        sa.String(50)
-    ),
-    sa.Column(
-        "measure",
-        sa.String(50)
-    ),
-    sa.Column(
-        "quantity",
-        sa.Integer
-    )
-)
-
-# Define tabela que conterá o valor nutricional dos ingredientes
-nutritional_value_ingredients = sa.Table(
-    "nutritional_value_ingredients",
-    metadata,
-    sa.Column(
-        "id",
-        sa.Integer,
-        primary_key=True
-    ),
-    sa.Column(
-        "id_ingredient",
-        sa.Integer,
+        "ingredients",
+        sa.JSON(), # {str:{measure:str, quantity:float}}
         sa.ForeignKey("ingredients.id")
-    ),
-    sa.Column(
-        "calories",
-        sa.Integer
-    ),
-    sa.Column(
-        "protein",
-        sa.Float
-    ),
-    sa.Column(
-        "carbo",
-        sa.Float
-    ),
-    sa.Column(
-        "saturated_fat",
-        sa.Float
-    ),
-    sa.Column(
-        "polyunsaturated_fat",
-        sa.Float
-    ),
-    sa.Column(
-        "monounsaturated_fat",
-        sa.Float
-    ),
-    sa.Column(
-        "fiber",
-        sa.Integer
-    ),
-    sa.Column(
-        "sugar",
-        sa.Integer
-    ),
-    sa.Column(
-        "sodium",
-        sa.Float
-    ),
-    sa.Column(
-        "potassium",
-        sa.Float
-    ),
+    )
 )
 
 # Define tabela que conterá o valor nutricional dos ingredientes
@@ -127,70 +47,30 @@ nutritional_value_recipes = sa.Table(
         sa.ForeignKey("recipes.id")
     ),
     sa.Column(
-        "calories",
-        sa.Integer
-    ),
-    sa.Column(
-        "protein",
-        sa.Float
-    ),
-    sa.Column(
-        "carbo",
-        sa.Float
-    ),
-    sa.Column(
-        "saturated_fat",
-        sa.Float
-    ),
-    sa.Column(
-        "polyunsaturated_fat",
-        sa.Float
-    ),
-    sa.Column(
-        "monounsaturated_fat",
-        sa.Float
-    ),
-    sa.Column(
-        "fiber",
-        sa.Integer
-    ),
-    sa.Column(
-        "sugar",
-        sa.Integer
-    ),
-    sa.Column(
-        "sodium",
-        sa.Float
-    ),
-    sa.Column(
-        "potassium",
-        sa.Float
-    ),
+        "nutritionl_value_ingredients",
+        sa.JSON(),
+        sa.ForeignKey("recipes.ingredients")
+    )
 )
 
 # Índices:
+# Crie índices para a tabela 'ingredients'
+# sa.Index(
+#     'idx_ingredients_id',
+#     ingredients.c.id
+# )
+
 # Crie índices para a tabela 'recipes'
 sa.Index(
-    'idx_recipess_name',
-    recipes.c.name
-)
-
-# Crie índices para a tabela 'ingredients'
-sa.Index(
-    'idx_ingredients_id_ingredient',
-    ingredients.c.id_recipe
+    'idx_recipes_id',
+    recipes.c.id
 )
 
 # Crie índices para a tabela 'nutritional_value_ingredients'
 sa.Index(
-    'idx_nutritional_value_ingredients_id_ingredient',
-    nutritional_value_ingredients.c.id_ingredient
-)
+    'idx_nutritional_value_recipes_nutritional_value_indredients',
+    nutritional_value_recipes.c.nutritional_value_indredients
 
-# Crie índices para a tabela 'nutritional_value_ingredients'
-sa.Index(
-    'idx_nutritional_value_recipes_id_recipe',
-    nutritional_value_ingredients.c.id_ingredient
 )
 
 engine = sa.create_engine(DATABASE_URL)
