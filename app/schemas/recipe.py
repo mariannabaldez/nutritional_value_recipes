@@ -1,10 +1,13 @@
 #pylint: disable=E0213
 
 import re
-from pydantic import BaseModel, constr, conlist, Field, validator
+from pydantic import BaseModel, constr, Field, validator
 from typing import Dict, Optional
 from unidecode import unidecode
 
+class IngredientsDetails(BaseModel):
+    measure: str
+    quantity: float
 
 class Recipe(BaseModel):
     """ Modelo de receita culinária """
@@ -31,12 +34,28 @@ class Recipe(BaseModel):
         )
 
     ingredients: Optional[
-        Dict[str, Dict[str, int]]
+        Dict[str, IngredientsDetails]
     ] = Field(..., example={
-            "farinha de trigo": {"gramas": 300},
-            "ovo": {"unidade": 3},
-            "manteiga": {"colheres": 3},
-            "peito de frango desfiado": {"gramas": 600},
+            "arroz": {
+                "measure": "gramas",
+                "quantity": 150
+            },
+            "alho": {
+                "measure": "dentes",
+                "quantity": 3
+            },
+            "cebola": {
+                "measure": "unidade",
+                "quantity": 0.5
+            },
+            "azeite": {
+                "measure": "ml",
+                "quantity": 10
+            },
+            "sal": {
+                "measure": "gramas",
+                "quantity": 5
+            }
         })
 
     @validator("name")
