@@ -53,24 +53,71 @@ nutritional_value_recipes = sa.Table(
     )
 )
 
-# Índices:
-# Crie índices para a tabela 'ingredients'
-# sa.Index(
-#     'idx_ingredients_id',
-#     ingredients.c.id
-# )
+roles = sa.Table(
+    "roles",
+    metadata,
+    sa.Column(
+        "id",
+        sa.Integer, primary_key=True
+    ),
+    sa.Column(
+        "name",
+        sa.String(25),
+    )
+)
+
+users = sa.Table(
+    "users",
+    metadata,
+    sa.Column(
+        "id",
+        sa.Integer, primary_key=True
+    ),
+    sa.Column(
+        "username",
+        sa.String(16),
+    ),
+    sa.Column(
+        "hashed_password",
+        sa.String(14),
+    ),
+    sa.Column(
+        "full_name",
+        sa.String(30)
+    ),
+    sa.Column(
+        "email",
+        sa.String(20)
+    ),
+    sa.Column(
+        "disable",
+        sa.Boolean,
+    ),
+    sa.Column(
+        "role",
+        sa.Integer,
+        sa.ForeignKey("roles.id")
+    ),
+    sa.Column(
+        "created_at",
+        sa.TIMESTAMP(timezone=True),
+        server_default=sa.func.now(),
+    ),
+    sa.Column(
+        "updated_at",
+        sa.TIMESTAMP(timezone=True),
+        server_default=sa.func.now(),
+        onupdate=sa.func.now(),
+    )
+)
+
+def concat_hashed_pass(password):
+    return f"h@sh3d.{password}"
 
 # Crie índices para a tabela 'recipes'
 sa.Index(
     'idx_recipes_id',
     recipes.c.id
-)
-
-# Crie índices para a tabela 'nutritional_value_ingredients'
-sa.Index(
-    'idx_nutritional_value_recipes_nutritional_value_indredients',
-    nutritional_value_recipes.c.nutritional_value_indredients
-
 )
 
 engine = sa.create_engine(DATABASE_URL)
