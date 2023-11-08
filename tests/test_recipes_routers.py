@@ -751,7 +751,7 @@ def test_failed_delete_recipe_not_found():
     """
     # Entrada com id inexistente
     with TestClient(app) as c:
-        response = c.update("/api/v1/recipes/0")
+        response = c.delete("/api/v1/recipes/0")
     # Verifica se response corresponde
     assert response.status_code == 404
     assert response.detail == "Receita não encontrada"
@@ -762,7 +762,7 @@ def test_failed_delete_recipe_not_found_two():
     """
     # Entrada com id inexistente
     with TestClient(app) as c:
-        response = c.update("/api/v1/recipes/99999999999999")
+        response = c.delete("/api/v1/recipes/99999999999999")
     # Verifica se response corresponde
     assert response.status_code == 404
     assert response.detail == "Receita não encontrada"
@@ -774,7 +774,7 @@ def test_failed_delete_recipe():
     """
     # Entrada com id inválido e inexistente
     with TestClient(app) as c:
-        response = c.update("/api/v1/recipes/invalid_id")
+        response = c.delete("/api/v1/recipes/invalid_id")
     # Verifica se response corresponde
     assert response.status_code == 404
     assert response.detail == "Receita não encontrada"
@@ -786,7 +786,7 @@ def test_failed_delete_recipe_two():
     """
     # Entrada com id inválido e inexistente
     with TestClient(app) as c:
-        response = c.update("/api/v1/recipes/True")
+        response = c.delete("/api/v1/recipes/True")
     # Verifica se response corresponde
     assert response.status_code == 404
     assert response.detail == "Receita não encontrada"
@@ -798,7 +798,7 @@ def test_failed_delete_recipe_tree():
     """
     # Entrada com id inválido e inexistente
     with TestClient(app) as c:
-        response = c.update("/api/v1/recipes/1.5")
+        response = c.delete("/api/v1/recipes/1.5")
     # Verifica se response corresponde
     assert response.status_code == 404
     assert response.detail == "Receita não encontrada"
