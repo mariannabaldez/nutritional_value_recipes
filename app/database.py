@@ -48,8 +48,7 @@ nutritional_value_recipes = sa.Table(
     ),
     sa.Column(
         "nutritionl_value_ingredients",
-        sa.JSON(),
-        sa.ForeignKey("recipes.ingredients")
+        sa.JSON()
     )
 )
 
