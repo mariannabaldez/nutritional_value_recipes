@@ -7,7 +7,7 @@ from app.schemas.recipe import Recipe, RecipeResponse
 from app.database import database, recipes
 import sqlalchemy as sa
 import re
-
+import json
 
 recipes_router = APIRouter(prefix="/recipes")
 
@@ -60,12 +60,15 @@ async def create_recipe(
             }}
 )) -> RecipeResponse:
 
+    # Transforma ingredients da entrada em JSON
+    ingredients_json = json.dumps(recipe.ingredients)
+
     # Verifica se receita já existe verificando se
     # os ingredientes, unidades de medidas e
     # quantidades deles são os mesmos
     ingredients_exists = await database.fetch_one(
         recipes.select().where(
-            recipes.c.ingredients == recipe.ingredients)
+            recipes.c.ingredients == ingredients_json)
     )
     if ingredients_exists:
         raise HTTPException(

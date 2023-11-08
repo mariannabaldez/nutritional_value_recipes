@@ -2,7 +2,7 @@
 
 import re
 from pydantic import BaseModel, constr, Field, validator
-from typing import Dict, Optional
+from typing import Dict, Union, Optional
 from unidecode import unidecode
 
 class IngredientsDetails(BaseModel):
@@ -34,7 +34,7 @@ class Recipe(BaseModel):
         )
 
     ingredients: Optional[
-        Dict[str, IngredientsDetails]
+        Dict[str, Dict[str, Union[str, float]]]
     ] = Field(..., example={
             "arroz": {
                 "measure": "gramas",
