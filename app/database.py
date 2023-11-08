@@ -1,4 +1,5 @@
 import sqlalchemy as sa
+from sqlalchemy.dialects.postgresql import JSON
 import databases
 
 DATABASE_URL = "postgresql://usuario:senha@localhost:5432/nutritional_value_recipes_dev"
@@ -27,8 +28,7 @@ recipes = sa.Table(
     ),
     sa.Column(
         "ingredients",
-        sa.JSON(), # {str:{measure:str, quantity:float}}
-        sa.ForeignKey("ingredients.id")
+        sa.JSON()
     )
 )
 
