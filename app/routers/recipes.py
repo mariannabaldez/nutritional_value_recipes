@@ -60,36 +60,13 @@ async def create_recipe(
             }}
 )) -> RecipeResponse:
 
-    # Transforma ingredients da entrada em JSON
-    ingredients_json = json.dumps(recipe.ingredients)
-
-    # Verifica se receita já existe verificando se
-    # os ingredientes, unidades de medidas e
-    # quantidades deles são os mesmos
-    ingredients_exists = await database.fetch_one(
-        recipes.select().where(
-            recipes.c.ingredients == ingredients_json)
-    )
-    if ingredients_exists:
-        raise HTTPException(
-            status_code=401,
-            detail="Receita já existe",
-        )
-
     # Cria comando SQL para inserir receita
-    # na tabela recipes se todos os dados
-    # estiverem preenchidos perante ao modelo e executa
-    if recipe.name and recipe.descript and recipe.ingredients:
-        query_recipe = recipes.insert().values(
-            name=recipe.name,
-            descript=recipe.descript,
-            ingredients=recipe.ingredients)
-        last_record_id = await database.execute(query_recipe)
-
-    else: raise HTTPException(
-            status_code=400,
-            detail="Bad Request",
-        )
+    # na tabela recipes e executa salvando id da query
+    query = recipes.insert().values(
+        name=recipe.name,
+        descript=recipe.descript,
+        ingredients=recipe.ingredients)
+    last_record_id = await database.execute(query)
 
     # Retorna detalhes da receita criada e id correspondente
     return RecipeResponse(id=last_record_id, **recipe.model_dump())
