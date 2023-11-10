@@ -31,7 +31,7 @@ class User(BaseModel):
         min_length=1,
         ) = Field(..., example="zecolmeia@abc.com")
     desable: bool
-    role: int
+    id_role: int
 
     @validator("username")
     def apply_unidecode(cls, v):
