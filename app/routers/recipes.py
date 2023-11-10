@@ -69,6 +69,42 @@ async def create_recipe(
     return RecipeResponse(id=last_record_id, **recipe.model_dump())
 
 @recipes_router.get(
+    "/",
+    summary="Mostra receitas",
+    response_description="Receitas registradas",
+    response_model=List[RecipeResponse],
+)
+async def view_recipes(
+    query: list = Query(
+        default_factory=list,
+        title="Query string",
+        description="Query string para filtrar os items",
+        alias="abc",
+    ),
+    limit: int = Query(default=10, ge=1, le=50),
+):
+    """
+    Mostra receitas
+    """
+    # Seleciona e retorna receitas baseado
+    # no limite passado de forma decrescente
+    query = await database.fetch_all(
+        recipes.select().order_by(
+            recipes.c.id.desc()).limit(limit))
+    result = list()
+    for r in query:
+        recipe_row = r._row
+        result.append(
+            {
+                "name": recipe_row['name'],
+                "descript": recipe_row['descript'],
+                "ingredients": recipe_row['ingredients']
+            }
+        )
+
+    return result
+
+@recipes_router.get(
     "/{recipe_id}",
     summary="Mostra uma unica receita pelo id",
     response_description="Detalhes da receita",
@@ -135,31 +171,6 @@ async def view_recipe_by_name(
         recipes.c.name == recipe
     )
     return await database.fetch_one(query)
-
-@recipes_router.get(
-    "/",
-    summary="Mostra receitas",
-    response_description="Receitas registradas",
-    response_model=List[RecipeResponse],
-)
-async def view_recipes(
-    query: list = Query(
-        default_factory=list,
-        title="Query string",
-        description="Query string para filtrar os items",
-        alias="abc",
-    ),
-    limit: int = Query(default=10, ge=1, le=50),
-):
-    """
-    Mostra receitas
-    """
-    # Seleciona e retorna receitas baseado
-    # no limite passado de forma decrescente
-    query = recipes.select().order_by(
-            recipes.c.id.desc()).limit(limit)
-
-    return await database.fetch_all(query)
 
 @recipes_router.put("/{recipe_id}")
 async def update_recipe(

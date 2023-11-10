@@ -33,7 +33,7 @@ def test_sucess_create_and_delete_new_user():
                 "hashed_password": "testpassword",
                 "full_name": "test name complete",
                 "email": "email@test.com",
-                "desable": False,
+                "disable": False,
                 "id_role": test_role_id
             }
         )
@@ -79,7 +79,7 @@ def test_failed_already_exists_create_user():
                 "hashed_password": "testpassword",
                 "full_name": "test name complete",
                 "email": "email@test.com",
-                "desable": False,
+                "disable": False,
                 "id_role": test_role_id
             }
         )
@@ -96,7 +96,7 @@ def test_failed_already_exists_create_user():
                 "hashed_password": "testpassword",
                 "full_name": "test name complete",
                 "email": "email@test.com",
-                "desable": False,
+                "disable": False,
                 "id_role": test_role_id
             }
         )
@@ -127,7 +127,7 @@ def test_failed_create_user():
                 "hashed_password": "testpassword",
                 "full_name": "test name complete",
                 "email": "email@test.com",
-                "desable": False,
+                "disable": False,
                 "id_role": None
             }
         )
@@ -164,7 +164,7 @@ def test_failed_create_user_two():
                 "hashed_password": "testpassword",
                 "full_name": "test name complete",
                 "email": "email@test.com",
-                "desable": False,
+                "disable": False,
                 "id_role": test_role_id
             }
         )
@@ -201,7 +201,7 @@ def test_failed_create_user_tree():
                 "hashed_password": "testpassword",
                 "full_name": "test name complete",
                 "email": "email@test.com",
-                "desable": False,
+                "disable": False,
                 "id_role": test_role_id
             }
         )
@@ -238,7 +238,7 @@ def test_failed_create_user_four():
                 "hashed_password": "testpassword",
                 "full_name": "test name complete",
                 "email": "email@test.com",
-                "desable": False,
+                "disable": False,
                 "id_role": test_role_id
             }
         )
@@ -276,7 +276,7 @@ def test_sucess_view_user_by_id():
                 "hashed_password": "testpassword",
                 "full_name": "test name complete",
                 "email": "email@test.com",
-                "desable": False,
+                "disable": False,
                 "id_role": test_role_id
             }
         )
@@ -296,7 +296,7 @@ def test_sucess_view_user_by_id():
         "hashed_password": "testpassword",
         "full_name": "test name complete",
         "email": "email@test.com",
-        "desable": False,
+        "disable": False,
         "id_role": test_role_id
     }
 
@@ -391,7 +391,7 @@ def test_sucess_view_user_by_name():
                 "hashed_password": "testpassword",
                 "full_name": "test name complete",
                 "email": "email@test.com",
-                "desable": False,
+                "disable": False,
                 "id_role": test_role_id
             }
         )
@@ -412,7 +412,7 @@ def test_sucess_view_user_by_name():
         "hashed_password": "testpassword",
         "full_name": "test name complete",
         "email": "email@test.com",
-        "desable": False,
+        "disable": False,
         "id_role": test_role_id
     }
 
@@ -468,7 +468,7 @@ def test_sucess_update_user():
                 "hashed_password": "testpassword",
                 "full_name": "test name complete",
                 "email": "email@test.com",
-                "desable": False,
+                "disable": False,
                 "id_role": test_role_id
             }
         )
@@ -491,7 +491,7 @@ def test_sucess_update_user():
         "hashed_password": "testpassword",
         "full_name": "test name complete",
         "email": "email@test.com",
-        "desable": False,
+        "disable": False,
         "id_role": test_role_id
     }
 
@@ -601,7 +601,7 @@ def test_sucess_delete_role():
                 "hashed_password": "testpassword",
                 "full_name": "test name complete",
                 "email": "email@test.com",
-                "desable": False,
+                "disable": False,
                 "id_role": test_role_id
             }
         )

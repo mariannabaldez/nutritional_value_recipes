@@ -30,7 +30,7 @@ class User(BaseModel):
         to_lower=True,
         min_length=1,
         ) = Field(..., example="zecolmeia@abc.com")
-    desable: bool
+    disable: bool
     id_role: int
 
     @validator("username")

@@ -22,7 +22,7 @@ async def create_user(
                         "hashed_password": "chocolate",
                         "full_name": "Willy Wonka",
                         "email": "wonka@abc.com",
-                        "desable": False,
+                        "disable": False,
                         "id_role": 1
                     }
                 }
