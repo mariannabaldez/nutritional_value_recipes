@@ -93,7 +93,7 @@ users = sa.Table(
         sa.Boolean,
     ),
     sa.Column(
-        "role",
+        "id_role",
         sa.Integer,
         sa.ForeignKey("roles.id")
     ),

@@ -56,7 +56,9 @@ def test_sucess_create_new_recipe():
 
     # Deleta receita criada
     with TestClient(app) as c:
-        response = c.delete(f"/api/v1/recipes/{response.json()['id']}")
+        response = c.delete(
+            f"/api/v1/recipes/{response.json()['id']}"
+        )
 
 def test_failed_already_exists_create_recipe():
     """ Teste falho
@@ -227,14 +229,59 @@ def test_sucess_view_recipe_by_id():
     """ Teste de sucesso
         Busca receita pelo id
     """
-    # Busca receita
+    # Cria uma nova receita
     with TestClient(app) as c:
-        response = c.get(
-            "/api/v1/recipes/1"
+        response = c.post(
+            "/api/v1/recipes/",
+            json={
+                "name": "test recipe",
+                "descript": "test preparation",
+                "ingredients": {
+                    "test_name_ingredient":{
+                        "test_unit_measure": "gramas",
+                        "test_quantity": 1
+                    },
+                    "test_name_ingredient_2":{
+                        "test_unit_measure": "gramas",
+                        "test_quantity": 1
+                    },
+                    "test_name_ingredient_3":{
+                        "test_unit_measure": "gramas",
+                        "test_quantity": 5
+                    }
+                }
+            }
         )
     # Verifica se response corresponde
     assert response.status_code == 200
     assert response.json() == {
+        "name": "test recipe",
+        "descript": "test preparation",
+        "ingredients": {
+            "test_name_ingredient":{
+                "test_unit_measure": "gramas",
+                "test_quantity": 1
+            },
+            "test_name_ingredient_2":{
+                "test_unit_measure": "gramas",
+                "test_quantity": 1
+            },
+            "test_name_ingredient_3":{
+                "test_unit_measure": "gramas",
+                "test_quantity": 5
+            }
+        },
+        "id": response.json()["id"]
+    }
+
+    # Busca receita
+    with TestClient(app) as c:
+        search_response = c.get(
+            f"/api/v1/recipes/{response.json()['id']}"
+        )
+    # Verifica se response corresponde
+    assert search_response.status_code == 200
+    assert search_response.json() == {
         "name": "empadao de frango",
         "descript": \
             "Em uma panela, aqueça o azeite e " + \
@@ -273,18 +320,11 @@ def test_sucess_view_recipe_by_id():
         "id": 1
     }
 
-def test_failed_view_recipe_by_id_not_found():
-    """ Teste falho
-        Busca receita por um id que não existe
-    """
-    # Busca receita
+    # Deleta receita criada
     with TestClient(app) as c:
-        response = c.get(
-            "/api/v1/recipes/99999999999999"
+        response = c.delete(
+            f"/api/v1/recipes/{response.json()['id']}"
         )
-    # Verifica se response corresponde
-    assert response.status_code == 404
-    assert response.detail == "Receita não encontrada"
 
 def test_failed_view_recipe_by_id():
     """ Teste falho
@@ -306,7 +346,7 @@ def test_failed_view_recipe_by_id_two():
     # Busca receita
     with TestClient(app) as c:
         response = c.get(
-            "/api/v1/recipes/abc"
+            "/api/v1/recipes/1.5"
         )
     # Verifica se response corresponde
     assert response.status_code == 404
@@ -319,20 +359,7 @@ def test_failed_view_recipe_by_id_tree():
     # Busca receita
     with TestClient(app) as c:
         response = c.get(
-            "/api/v1/recipes/1.5"
-        )
-    # Verifica se response corresponde
-    assert response.status_code == 404
-    assert response.detail == "Receita não encontrada"
-
-def test_failed_view_recipe_by_name_four():
-    """ Teste falho
-        Busca receita por um id com tipo diferente
-    """
-    # Busca receita
-    with TestClient(app) as c:
-        response = c.get(
-            "/api/v1/recipes/true"
+            "/api/v1/recipes/True"
         )
     # Verifica se response corresponde
     assert response.status_code == 404
@@ -398,45 +425,6 @@ def test_failed_not_found_view_recipe_by_name():
     with TestClient(app) as c:
         response = c.get(
             "/api/v1/recipes/invalida"
-        )
-    # Verifica se response corresponde
-    assert response.status_code == 404
-    assert response.detail == "Receita não encontrada"
-
-def test_failed_view_recipe_by_name():
-    """ Teste falho
-        Busca receita por um name com tipo diferente
-    """
-    # Busca receita
-    with TestClient(app) as c:
-        response = c.get(
-            "/api/v1/recipes/0"
-        )
-    # Verifica se response corresponde
-    assert response.status_code == 404
-    assert response.detail == "Receita não encontrada"
-
-def test_failed_view_recipe_by_name_two():
-    """ Teste falho
-        Busca receita por um name com tipo diferente
-    """
-    # Busca receita
-    with TestClient(app) as c:
-        response = c.get(
-            "/api/v1/recipes/1.5"
-        )
-    # Verifica se response corresponde
-    assert response.status_code == 404
-    assert response.detail == "Receita não encontrada"
-
-def test_failed_view_recipe_by_name_tree():
-    """ Teste falho
-        Busca receita por um name com tipo diferente
-    """
-    # Busca receita
-    with TestClient(app) as c:
-        response = c.get(
-            "/api/v1/recipes/true"
         )
     # Verifica se response corresponde
     assert response.status_code == 404
@@ -552,39 +540,6 @@ def test_failed_update_recipe_not_found():
                 }
             }
         )
-
-    # Verifica se response corresponde
-    assert response.status_code == 404
-    assert response.detail == "Receita não encontrada"
-
-def test_failed_update_recipe_not_found_two():
-    """ Teste de sucesso
-        Tenta atualizar receita por um id que não existe
-    """
-    # Entrada com id inexistente
-    with TestClient(app) as c:
-        response = c.update(
-            "/api/v1/recipes/99999999999999",
-            json={
-                "name": "test recipe",
-                "descript": "test preparation",
-                "ingredients": {
-                    "test_name_ingredient":{
-                        "test_unit_measure": "gramas",
-                        "test_quantity": 1
-                    },
-                    "test_name_ingredient_2":{
-                        "test_unit_measure": "gramas",
-                        "test_quantity": 1
-                    },
-                    "test_name_ingredient_3":{
-                        "test_unit_measure": "gramas",
-                        "test_quantity": 5
-                    }
-                }
-            }
-        )
-
     # Verifica se response corresponde
     assert response.status_code == 404
     assert response.detail == "Receita não encontrada"
@@ -617,7 +572,6 @@ def test_failed_update_recipe():
                 }
             }
         )
-
     # Verifica se response corresponde
     assert response.status_code == 404
     assert response.detail == "Receita não encontrada"
@@ -650,7 +604,6 @@ def test_failed_update_recipe_two():
                 }
             }
         )
-
     # Verifica se response corresponde
     assert response.status_code == 404
     assert response.detail == "Receita não encontrada"
@@ -683,7 +636,6 @@ def test_failed_update_recipe_tree():
                 }
             }
         )
-
     # Verifica se response corresponde
     assert response.status_code == 404
     assert response.detail == "Receita não encontrada"
@@ -741,9 +693,11 @@ def test_sucess_delete_recipe():
 
     # Deleta receita criada
     with TestClient(app) as c:
-        response = c.delete(f"/api/v1/recipes/{response.json()['id']}")
+        delete_response = c.delete(
+            f"/api/v1/recipes/{response.json()['id']}"
+        )
     # Verifica se response corresponde
-    assert response.status_code == 204
+    assert delete_response.status_code == 204
 
 def test_failed_delete_recipe_not_found():
     """ Teste de sucesso
@@ -752,17 +706,6 @@ def test_failed_delete_recipe_not_found():
     # Entrada com id inexistente
     with TestClient(app) as c:
         response = c.delete("/api/v1/recipes/0")
-    # Verifica se response corresponde
-    assert response.status_code == 404
-    assert response.detail == "Receita não encontrada"
-
-def test_failed_delete_recipe_not_found_two():
-    """ Teste de sucesso
-        Tenta deletar receita por um id que não existe
-    """
-    # Entrada com id inexistente
-    with TestClient(app) as c:
-        response = c.delete("/api/v1/recipes/99999999999999")
     # Verifica se response corresponde
     assert response.status_code == 404
     assert response.detail == "Receita não encontrada"

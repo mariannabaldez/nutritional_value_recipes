@@ -1,13 +1,10 @@
 from fastapi import (
-    Query, Path, Body, Header, Response, status, HTTPException,
+    Query, Path, Body, Response, status, HTTPException,
     APIRouter
 )
-from typing import Union, List, Annotated
+from typing import List
 from app.schemas.recipe import Recipe, RecipeResponse
 from app.database import database, recipes
-import sqlalchemy as sa
-import re
-import json
 
 recipes_router = APIRouter(prefix="/recipes")
 

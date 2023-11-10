@@ -29,8 +29,11 @@ async def create_role(
         Id do role criado.
     """
     # Levanta exeção se tipo de usuário ja estiver cadastrado
-    if roles.select().where(
-            roles.c.name == role.name):
+    role_exists = await database.fetch_one(
+        roles.select().where(
+            roles.c.name == role.name)
+    )
+    if role_exists:
         raise HTTPException(
             status_code=401,
             detail="Tipo de úsuario já existe"
@@ -67,14 +70,14 @@ async def view_role_by_id(
             roles.c.id == role_id)
     )
 
-    # Se o ingrediente não for encontrado,levanta uma exceção
+    # Se o tipo de usuário não for encontrado, levanta uma exceção
     if not role_exists:
         raise HTTPException(
             status_code=404,
             detail="Tipo de usuário não encontrado",
         )
 
-    # Seleciona receita no banco de dados e a retorna
+    # Seleciona tipo de usuário no banco de dados e a retorna
     query = roles.select().where(
         roles.c.id == role_id
     )
@@ -109,31 +112,31 @@ async def view_role_by_name(
 
     # Seleciona receita no banco de dados e a retorna
     query = roles.select().where(
-        roles.c.id == role
+        roles.c.name == role
     )
     return await database.fetch_one(query)
 
 @roles_router.get(
     "/",
-    summary="Mostra tipos de úsuario",
-    response_description="Tipos de úsuarios registradas",
+    summary="Mostra tipos de usuário",
+    response_description="Tipos de usuários registradas",
     response_model=List[RoleResponse],
 )
 async def view_roles(
     query: list = Query(
         default_factory=list,
-        title="Tipos de úsuarios",
-        description="Tipos de úsuarios cadastrados",
+        title="Tipos de usuários",
+        description="Tipos de usuários cadastrados",
         alias="abc",
     ),
     limit: int = Query(default=10, ge=1, le=50),
 ):
     """
     Return:
-        Mostra tipos de úsuarios cadastrados
+        Mostra tipos de usuários cadastrados
         de acordo com o limite de quantidade.
     """
-    # Seleciona e retorna tipos de úsuarios
+    # Seleciona e retorna tipos de usuários
     # baseado no limite passado e retorna
     query = roles.select().order_by(
         roles.c.id).limit(limit)
@@ -146,7 +149,7 @@ async def update_role(
         ..., **Role.model_config
 )) -> RoleResponse:
     """
-    Altera tipo de usuário pelo id
+    Altera tipo de usuário pelo id passado
     Returns:
         Tipo de usuário com as alterações realizadas
         e id correspondente
@@ -180,7 +183,7 @@ async def delete_role(
         role_id: int = Path(..., title="id do tipo de usuário"),
 ):
     """
-    Deleta tipo de usuário pelo id
+    Deleta tipo de usuário pelo id passado
     Returns:
         Status da execução
     """
