@@ -5,6 +5,7 @@ from fastapi import (
 from typing import List
 from app.schemas.recipe import Recipe, RecipeResponse
 from app.database import database, recipes
+import json
 
 recipes_router = APIRouter(prefix="/recipes")
 
@@ -96,9 +97,10 @@ async def view_recipes(
         recipe_row = r._row
         result.append(
             {
+                "id": recipe_row['id'],
                 "name": recipe_row['name'],
                 "descript": recipe_row['descript'],
-                "ingredients": recipe_row['ingredients']
+                "ingredients": json.loads(recipe_row['ingredients'])
             }
         )
 
@@ -132,11 +134,16 @@ async def view_recipe_by_id(
             detail="Receita não encontrada",
         )
 
-    # Seleciona receita no banco de dados e a retorna
-    query = recipes.select().where(
-        recipes.c.id == recipe_id
+    # Captura dados da receita no banco de dados e retorna
+    result = recipe_exists._row
+    return(
+        {
+            "id": result['id'],
+            "name": result['name'],
+            "descript": result['descript'],
+            "ingredients": json.loads(result['ingredients'])
+        }
     )
-    return await database.fetch_one(query)
 
 @recipes_router.get(
     "/{recipe_name}",
@@ -145,7 +152,7 @@ async def view_recipe_by_id(
     response_model=RecipeResponse,
 )
 async def view_recipe_by_name(
-    recipe: int = Path(..., title="nome da entrada"),
+    recipe_name: str = Path(..., title="nome da entrada"),
 ) -> RecipeResponse:
     """
     Mostra os detalhes de uma receita.
@@ -156,7 +163,7 @@ async def view_recipe_by_name(
     # a receita com base no nome
     recipe_exists = await database.fetch_one(
         recipes.select().where(
-        recipes.c.name == recipe)
+        recipes.c.name == recipe_name)
     )
 
     # Se o ingrediente não for encontrado,levanta uma exceção
@@ -166,11 +173,16 @@ async def view_recipe_by_name(
             detail="Receita não encontrada",
         )
 
-    # Seleciona receita no banco de dados e a retorna
-    query = recipes.select().where(
-        recipes.c.name == recipe
+    # Captura dados da receita no banco de dados e retorna
+    result = recipe_exists._row
+    return(
+        {
+            "id": result['id'],
+            "name": result['name'],
+            "descript": result['descript'],
+            "ingredients": json.loads(result['ingredients'])
+        }
     )
-    return await database.fetch_one(query)
 
 @recipes_router.put("/{recipe_id}")
 async def update_recipe(
